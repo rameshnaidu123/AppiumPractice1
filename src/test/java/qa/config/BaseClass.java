@@ -1,9 +1,11 @@
 package qa.config;
 
+import com.google.common.collect.ImmutableMap;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 public class BaseClass {
 
@@ -33,8 +36,14 @@ public class BaseClass {
         options.setCapability("udid", udid);
         URL url = new URL("http://127.0.0.1:4723");
         options.setCapability("automationName", automationName);
-        options.setCapability("appPackage", "com.google.android.youtube");
-        options.setCapability("appActivity","com.google.android.youtube.HomeActivity");
+       // options.setCapability("appPackage", "com.google.android.youtube");
+       // options.setCapability("appActivity","com.google.android.youtube.HomeActivity");
+        options.setCapability("appPackage", "com.arvind.storeapp");
+        options.setCapability("appActivity","com.arvind.storeapp.splash.SplashActivity");
+        options.setCapability("app","/home/ramesh.naidu/Documents/AppiumPractice/src/test/resources/app/4.1.4(220)-develop-debug.apk");
+        options.setCapability("unlockType","pin");
+        options.setCapability("unlockKey","9966");
+        options.setCapability("autoGrantPermissions",true);
 
 //        if(emulator.equalsIgnoreCase("true"))
 //        {
@@ -45,6 +54,7 @@ public class BaseClass {
             // creating driver session
             driver=new AndroidDriver(url,options);
        // }
+        driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
 
 
     }
@@ -56,6 +66,12 @@ public class BaseClass {
     {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(15));
         wait.until(ExpectedConditions.visibilityOf(e));
+    }
+    public void waitForClickable(WebElement e)
+    {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(15));
+        wait.until(ExpectedConditions.elementToBeClickable(e));
+
     }
 
     public void sendKeys(WebElement e, String txt)
@@ -80,8 +96,42 @@ public class BaseClass {
 
     public void click(WebElement e, String txt)
     {
-        waitForVisibility(e);
+        waitForClickable(e);
         e.click();
+    }
+
+    public void scroll(int left,int top,int width, int height ,String direction){
+        boolean canScrollMore;
+
+        for(int i=0;i<1;i++){
+             driver.executeScript("mobile: swipeGesture", ImmutableMap.of(
+                    "left", left, "top", top, "width", width, "height", height,
+                    "direction", direction,
+                    "percent", 0.8
+            ));
+        }
+
+
+
+    }
+
+    public void clickCoordinate(){
+        driver.executeScript("mobile: clickGesture", ImmutableMap.of(
+
+               "x",58,
+                "y",119
+        ));
+    }
+
+    public void waitForActivity(String desiredActivity) throws InterruptedException
+    {
+        int counter = 0;
+        do {
+            Thread.sleep(1000);
+            counter++;
+        } while(driver.currentActivity().contains(desiredActivity) && (counter<=5));
+
+        // log("Activity appeared :" + driver.currentActivity(), true);
     }
 
 

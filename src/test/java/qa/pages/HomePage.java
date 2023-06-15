@@ -25,6 +25,30 @@ public class HomePage extends BaseClass {
     @AndroidFindBy(accessibility="Close")
     private WebElement close;
 
+    @AndroidFindBy(accessibility = "Home")
+    private WebElement home_button;
+
+    public WebElement getHome_button() {
+        return home_button;
+    }
+
+    public WebElement getShorts_button() {
+        return shorts_button;
+    }
+
+    public WebElement getSubcription_button() {
+        return subcription_button;
+    }
+
+    @AndroidFindBy(accessibility = "Shorts")
+    private WebElement shorts_button;
+
+    @AndroidFindBy(accessibility = "Subscriptions: New content is available")
+    private WebElement subcription_button;
+
+
+
+
     public WebElement getWatchLater() {
         return watchLater;
     }
